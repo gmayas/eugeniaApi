@@ -5,7 +5,7 @@ EugeniaApi BackEnd es una API Rest que fue creada con NodeJS versión 20.12.2, c
 
 En proceso de desarrollo ...
 
-![](/images/img01.png)
+![](/images/01.png)
 
 
 `© 2024 Copyright: GMayaS C:\>Desarrollo en Sistemas.`
