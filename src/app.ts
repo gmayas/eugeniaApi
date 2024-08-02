@@ -1,31 +1,22 @@
 import express, { Application } from 'express';
 import morgan from 'morgan';
-
-import bodyParser from 'body-parser';
-
 // Cors
 import cors from 'cors';
-
+// Routes
 import UserController from './routes/user';
+import rootController from './routes/index';
 import dataJsonController from './routes/datajson';
-
-const app: Application = express();
-
 // settings
-app.set('port', process.env.PORT || 3000 );
-
+const app: Application = express();
+app.set('port', process.env.PORT || 4000 );
 // Middlewares
 app.use(morgan('dev'));
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json());
-//app.use(bodyParser.json())
-//app.use(bodyParser.urlencoded({ extended: true }))
-
 // Cors
 app.use(cors())
-
-//
 // Routes
+app.use('/', rootController);
 app.use('/api/user', UserController);
-app.use('/api/dataJson', dataJsonController);
+//app.use('/api/dataJson', dataJsonController);
 export default app;
