@@ -5,7 +5,7 @@ import cors from 'cors';
 // Routes
 import UserController from './routes/user';
 import rootController from './routes/index';
-import dataJsonController from './routes/datajson';
+import invController from './routes/invitations';
 // settings
 const app: Application = express();
 app.set('port', process.env.PORT || 4000 );
@@ -18,5 +18,5 @@ app.use(cors())
 // Routes
 app.use('/', rootController);
 app.use('/api/user', UserController);
-//app.use('/api/dataJson', dataJsonController);
+app.use('/api/invitations', invController);
 export default app;

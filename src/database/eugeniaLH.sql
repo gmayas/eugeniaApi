@@ -1,6 +1,8 @@
 /*
 -- Name data base
 
+nextia-db
+
 CREATE DATABASE "nextiaDB"
     WITH
     OWNER = postgres
@@ -24,51 +26,52 @@ CREATE TABLE IF NOT EXISTS eugenia.users
 (
     id_user serial,
     name_user character varying(255),
+    last_name_user character varying(255),
     email_user character varying(255),
     password_user character varying(255),
+    apartment_num_user character varying(255),
     PRIMARY KEY (id_user)
 );
 
 
-INSERT INTO eugenia.users(name_user, email_user, password_user)
-	VALUES ('gmayas', 'isc_gmayas@hotmail.com', 'pass12345');
+INSERT INTO eugenia.users(name_user, last_name_user, email_user,  password_user, apartment_num_user)
+                	VALUES ('Gabriel', 'Maya Sanchez','isc_gmayas@hotmail.com', 'pass12345', 'B-02-A');
 
-SELECT id_user, name_user, email_user, password_user
+               	
+SELECT id_user, name_user, last_name_user, email_user, password_user, apartment_num_user
 	FROM eugenia.users;
 
 
 -- eugenia.userdata
 
-CREATE TABLE IF NOT EXISTS eugenia.userdata
+CREATE TABLE IF NOT EXISTS eugenia.invitations
 (
-    id_userdata serial,
-    id_user_userdata integer,
-    address_userdata character varying(255),
-    phone_userdata character varying(20),
-    birthdate_userdata date,
-    PRIMARY KEY (id_userdata, id_user_userdata),
-	FOREIGN KEY (id_user_userdata)
+    id_inv serial,
+    id_user_inv integer,
+    creation_date_inv timestamp,
+    entry_date_time_inv timestamp, 
+    expiration_date_inv timestamp,
+    PRIMARY KEY (id_inv, id_user_inv),
+	FOREIGN KEY (id_user_inv)
       REFERENCES eugenia.users(id_user)
 );
 
-ALTER TABLE eugenia.userdata
-    OWNER to aovudieocshokj;
+-- PostgreSQL uses the yyyy-mm-dd hh:mm:ss format date.
 
--- PostgreSQL uses the yyyy-mm-dd format date.
+INSERT INTO eugenia.invitations(id_user_inv, creation_date_inv, entry_date_time_inv, expiration_date_inv)
+	VALUES ('1', '2024-08-03 22:17:00', '2024-08-04 07:00:00','2024-08-05 00:00:00');
 
-INSERT INTO eugenia.userdata(id_user_userdata, address_userdata, phone_userdata, birthdate_userdata)
-	VALUES ('1', 'Veronoca 302', '+52 782 823 2380','1975-02-08');
+-- Select all user invitations
 
--- Select data user
+SELECT id_user, name_user, last_name_user, id_inv, creation_date_inv, entry_date_time_inv, expiration_date_inv
+FROM eugenia.users
+left JOIN  eugenia.invitations on (id_user = id_user_inv )
+Order by id_user
 
-select name_user, email_user, password_user, address_userdata, phone_userdata, birthdate_userdata
-from eugenia.users as us
-left join eugenia.userdata as ud on (id_user = id_user_userdata );
+-- Select invitations user id
 
--- Select data user age
-
-SELECT id_userdata, id_user_userdata, address_userdata, phone_userdata, 
-       birthdate_userdata, Age(birthdate_userdata) age_userdata 
-	FROM eugenia.userdata
-	Where id_user_userdata = '1';
+SELECT id_user, name_user, last_name_user, id_inv, creation_date_inv, entry_date_time_inv, expiration_date_inv
+FROM eugenia.users
+left JOIN eugenia.invitations on (id_user = id_user_inv )
+WHERE id_user = '1'  
 
