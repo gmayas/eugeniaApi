@@ -92,8 +92,8 @@ export const createInvUser = async (req: Request, res: Response): Promise<Respon
     }
 };
 
-// Modify Inv ID
-export const modifyInvId = async (req: Request, res: Response): Promise<Response> => {
+// Modify Expiration Date Invitation Id
+export const modifyExpDateInvId = async (req: Request, res: Response): Promise<Response> => {
     try {
         let sqlString: string;
         const { id_inv } = req.params;
@@ -127,6 +127,33 @@ export const deleteInvId = async (req: Request, res: Response): Promise<Response
         sqlString = format('DELETE FROM eugenia.invitations WHERE id_inv = %L', id_inv);
         console.log('sqlString DeleteInvitation: ', sqlString)
         const delInv: QueryResult = await pool.query(sqlString);
+        return res.status(200).json(
+            {
+                message: 'Query succesfully',
+                success: true,
+                error: 'Not error'
+            }
+        );
+    } catch (e) {
+        console.log(e);
+        return res.status(500).json({
+            message: 'Error in create user',
+            success: false,
+            error: e
+        })
+    }
+};
+
+// Modify Status Invitation Id
+export const modifyStatusInvId = async (req: Request, res: Response): Promise<Response> => {
+    try {
+        let sqlString: string;
+        const { id_inv } = req.params;
+        const { new_expiration_date_inv } = req.body;
+        // Update
+        sqlString = format('UPDATE eugenia.invitations SET expiration_date_inv = %L WHERE id_inv = %L', new_expiration_date_inv, id_inv);
+        console.log('sqlString Update: ', sqlString)
+        const saveInv: QueryResult = await pool.query(sqlString);
         return res.status(200).json(
             {
                 message: 'Query succesfully',
