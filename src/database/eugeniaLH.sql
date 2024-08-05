@@ -1,6 +1,8 @@
 /*
 -- Name data base
 
+nextia-db
+
 CREATE DATABASE "nextiaDB"
     WITH
     OWNER = postgres
@@ -24,51 +26,100 @@ CREATE TABLE IF NOT EXISTS eugenia.users
 (
     id_user serial,
     name_user character varying(255),
+    last_name_user character varying(255),
     email_user character varying(255),
     password_user character varying(255),
+    apartment_num_user character varying(255),
     PRIMARY KEY (id_user)
 );
 
 
-INSERT INTO eugenia.users(name_user, email_user, password_user)
-	VALUES ('gmayas', 'isc_gmayas@hotmail.com', 'pass12345');
+INSERT INTO eugenia.users(name_user, last_name_user, email_user,  password_user, apartment_num_user)
+                	VALUES ('Gabriel', 'Maya Sanchez','isc_gmayas@hotmail.com', 'pass12345', 'B-02-A');
 
-SELECT id_user, name_user, email_user, password_user
+               	
+SELECT id_user, name_user, last_name_user, email_user, password_user, apartment_num_user
 	FROM eugenia.users;
 
 
--- eugenia.userdata
+-- eugenia.invitations
 
-CREATE TABLE IF NOT EXISTS eugenia.userdata
-(
-    id_userdata serial,
-    id_user_userdata integer,
-    address_userdata character varying(255),
-    phone_userdata character varying(20),
-    birthdate_userdata date,
-    PRIMARY KEY (id_userdata, id_user_userdata),
-	FOREIGN KEY (id_user_userdata)
-      REFERENCES eugenia.users(id_user)
+CREATE TABLE IF NOT EXISTS eugenia.invitations (
+	id_inv serial4 NOT NULL,
+	id_user_inv int4 NOT NULL,
+	id_inv_status int4 NULL,
+	creation_date_inv timestamp NULL,
+	entry_date_time_inv timestamp NULL,
+	expiration_date_inv timestamp NULL,
+	CONSTRAINT invitations_pkey PRIMARY KEY (id_inv, id_user_inv),
+	CONSTRAINT invitations_id_inv_status_fkey FOREIGN KEY (id_inv_status) REFERENCES eugenia.invstatus(id_status),
+	CONSTRAINT invitations_id_user_inv_fkey FOREIGN KEY (id_user_inv) REFERENCES eugenia.users(id_user)
+);
+CREATE INDEX invitations_id_inv_status_idx ON eugenia.invitations (id_inv_status);
+-- PostgreSQL uses the yyyy-mm-dd hh:mm:ss format date.
+
+-- eugenia.invstatus definition
+
+CREATE TABLE IF NOT EXISTS eugenia.invstatus (
+	id_status serial4 NOT NULL,
+	status_inv varchar(255) NULL,
+	CONSTRAINT invstatus_pkey PRIMARY KEY (id_status)
 );
 
-ALTER TABLE eugenia.userdata
-    OWNER to aovudieocshokj;
 
--- PostgreSQL uses the yyyy-mm-dd format date.
+INSERT INTO eugenia.invitations(id_user_inv, id_inv_status, creation_date_inv, entry_date_time_inv, expiration_date_inv)
+	VALUES ('1', '1' ,'2024-08-04 15:00:00', '2024-08-11 07:00:00','2024-08-12 00:00:00');
 
-INSERT INTO eugenia.userdata(id_user_userdata, address_userdata, phone_userdata, birthdate_userdata)
-	VALUES ('1', 'Veronoca 302', '+52 782 823 2380','1975-02-08');
 
--- Select data user
+INSERT INTO eugenia.invstatus (status_inv)
+VALUES ('Activa'), ('Inactiva');    
 
-select name_user, email_user, password_user, address_userdata, phone_userdata, birthdate_userdata
-from eugenia.users as us
-left join eugenia.userdata as ud on (id_user = id_user_userdata );
+-- Select all user invitations
 
--- Select data user age
 
-SELECT id_userdata, id_user_userdata, address_userdata, phone_userdata, 
-       birthdate_userdata, Age(birthdate_userdata) age_userdata 
-	FROM eugenia.userdata
-	Where id_user_userdata = '1';
+SELECT id_user, name_user, last_name_user, id_inv_status, status_inv, id_inv, expiration_date_inv, timestatus(expiration_date_inv) as time_status
+FROM eugenia.users
+left JOIN eugenia.invitations on (id_user = id_user_inv )
+left join eugenia.invstatus on (id_inv_status = id_status)
+Order by id_user
 
+-- Select invitations user id
+
+
+SELECT id_user, name_user, last_name_user, id_inv_status, status_inv, id_inv, expiration_date_inv, timestatus(expiration_date_inv) as time_status
+FROM eugenia.users
+left JOIN eugenia.invitations on (id_user = id_user_inv )
+left join eugenia.invstatus on (id_inv_status = id_status)
+WHERE id_user = '1'   
+Order by id_inv
+
+-- Select invitations id
+
+SELECT id_user, name_user, last_name_user, expiration_date_inv, timestatus(expiration_date_inv) as time_status, status_inv
+FROM eugenia.users
+left JOIN eugenia.invitations on (id_user = id_user_inv )
+left join eugenia.invstatus on (id_inv_status = id_status)
+where id_inv = '3';
+
+
+-- DROP FUNCTION eugenia.timestatus();
+
+-- DROP FUNCTION eugenia.timestatus();
+
+CREATE OR REPLACE FUNCTION eugenia.timestatus(expiration_date_inv timestamp)
+	RETURNS varchar
+	LANGUAGE plpgsql
+AS $function$
+    
+    DECLARE 
+ 		 time_status varchar(30);
+ 
+	BEGIN
+		
+      SET TIMEZONE='America/Mexico_City';
+      SELECT case WHEN  NOW() <= '2024-08-04 20:17:00' then 'Vijente' else 'Expirado' end INTO time_status;
+      RETURN time_status;
+
+	END;
+$function$
+;

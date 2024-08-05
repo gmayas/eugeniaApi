@@ -3,9 +3,9 @@ import morgan from 'morgan';
 // Cors
 import cors from 'cors';
 // Routes
-import UserController from './routes/user';
-import rootController from './routes/index';
-import dataJsonController from './routes/datajson';
+import rootRoute from './routes/index';
+import userRoute from './routes/user';
+import invRoute from './routes/invitations';
 // settings
 const app: Application = express();
 app.set('port', process.env.PORT || 4000 );
@@ -16,7 +16,8 @@ app.use(express.json());
 // Cors
 app.use(cors())
 // Routes
-app.use('/', rootController);
-app.use('/api/user', UserController);
-//app.use('/api/dataJson', dataJsonController);
+app.use('/', rootRoute);
+app.use('/api/user', userRoute);
+app.use('/api/invitations', invRoute);
+//
 export default app;
