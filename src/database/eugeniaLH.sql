@@ -65,20 +65,61 @@ CREATE TABLE IF NOT EXISTS eugenia.invstatus (
 	status_inv varchar(255) NULL,
 	CONSTRAINT invstatus_pkey PRIMARY KEY (id_status)
 );
-INSERT INTO eugenia.invitations(id_user_inv, creation_date_inv, entry_date_time_inv, expiration_date_inv)
-	VALUES ('1', '2024-08-04 15:00:00', '2024-08-11 07:00:00','2024-08-12 00:00:00');
+
+
+INSERT INTO eugenia.invitations(id_user_inv, id_inv_status, creation_date_inv, entry_date_time_inv, expiration_date_inv)
+	VALUES ('1', '1' ,'2024-08-04 15:00:00', '2024-08-11 07:00:00','2024-08-12 00:00:00');
+
+
+INSERT INTO eugenia.invstatus (status_inv)
+VALUES ('Activa'), ('Inactiva');    
 
 -- Select all user invitations
 
-SELECT id_user, name_user, last_name_user, id_inv, creation_date_inv, entry_date_time_inv, expiration_date_inv, status_inv
+
+SELECT id_user, name_user, last_name_user, id_inv_status, status_inv, id_inv, expiration_date_inv, timestatus(expiration_date_inv) as time_status
 FROM eugenia.users
-left JOIN  eugenia.invitations on (id_user = id_user_inv )
+left JOIN eugenia.invitations on (id_user = id_user_inv )
+left join eugenia.invstatus on (id_inv_status = id_status)
 Order by id_user
 
 -- Select invitations user id
 
-SELECT id_user, name_user, last_name_user, id_inv, creation_date_inv, entry_date_time_inv, expiration_date_inv, status_inv
+
+SELECT id_user, name_user, last_name_user, id_inv_status, status_inv, id_inv, expiration_date_inv, timestatus(expiration_date_inv) as time_status
 FROM eugenia.users
 left JOIN eugenia.invitations on (id_user = id_user_inv )
-WHERE id_user = '1'  
+left join eugenia.invstatus on (id_inv_status = id_status)
+WHERE id_user = '1'   
+Order by id_inv
 
+-- Select invitations id
+
+SELECT id_user, name_user, last_name_user, expiration_date_inv, timestatus(expiration_date_inv) as time_status, status_inv
+FROM eugenia.users
+left JOIN eugenia.invitations on (id_user = id_user_inv )
+left join eugenia.invstatus on (id_inv_status = id_status)
+where id_inv = '3';
+
+
+-- DROP FUNCTION eugenia.timestatus();
+
+-- DROP FUNCTION eugenia.timestatus();
+
+CREATE OR REPLACE FUNCTION eugenia.timestatus(expiration_date_inv timestamp)
+	RETURNS varchar
+	LANGUAGE plpgsql
+AS $function$
+    
+    DECLARE 
+ 		 time_status varchar(30);
+ 
+	BEGIN
+		
+      SET TIMEZONE='America/Mexico_City';
+      SELECT case WHEN  NOW() <= '2024-08-04 20:17:00' then 'Vijente' else 'Expirado' end INTO time_status;
+      RETURN time_status;
+
+	END;
+$function$
+;

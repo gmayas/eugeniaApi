@@ -50,7 +50,24 @@ export const getUserbyEmail = async (req: Request, res: Response): Promise<Respo
     }
 };
 
-
+// Get User by Id
+export const getUserbyId = async (req: Request, res: Response): Promise<Response> => {
+    try {
+        const { id_user } = req.params;
+        let sqlString: string = format('SELECT id_user, name_user, last_name_user, email_user, password_user, apartment_num_user FROM %s WHERE id_user = %L', 'eugenia.users', id_user);
+        const response: QueryResult = await pool.query(sqlString);
+        return res.status(200).json({
+            message: 'Query succesfully',
+            data: response.rows
+        });
+    } catch (e) {
+        console.log(e);
+        return res.status(500).json({
+            message: 'Error in query',
+            error: e
+        })
+    }
+};
 
 // Email exists
 export const emailExists = async (email_user: string) => {
