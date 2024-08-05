@@ -123,3 +123,4 @@ AS $function$
 	END;
 $function$
 ;
+GRANT EXECUTE ON FUNCTION eugenia.timestatus(timestamp without time zone) TO PUBLIC;

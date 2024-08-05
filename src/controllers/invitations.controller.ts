@@ -6,7 +6,7 @@ import format from 'pg-format';
 export const getInvId = async (req: Request, res: Response): Promise<Response> => {
     try {
         const { id_inv } = req.params;
-        let sqlString: string = format('SELECT id_user, name_user, last_name_user, expiration_date_inv, timestatus(expiration_date_inv) as time_status, status_inv '
+        let sqlString: string = format('SELECT id_user, name_user, last_name_user, expiration_date_inv, eugenia.timestatus(expiration_date_inv) as time_status, status_inv '
             + 'FROM eugenia.users '
             + 'Left JOIN eugenia.invitations on (id_user = id_user_inv ) '
             + 'Left JOIN eugenia.invstatus on (id_inv_status = id_status) '
@@ -30,7 +30,7 @@ export const getInvId = async (req: Request, res: Response): Promise<Response> =
 export const getInvUserId = async (req: Request, res: Response): Promise<Response> => {
     try {
         const { id_user } = req.params;
-        let sqlString: string = format('SELECT id_user, name_user, last_name_user, id_inv, creation_date_inv, entry_date_time_inv, expiration_date_inv, timestatus(expiration_date_inv) as time_status, status_inv '
+        let sqlString: string = format('SELECT id_user, name_user, last_name_user, id_inv, creation_date_inv, entry_date_time_inv, expiration_date_inv, eugenia.timestatus(expiration_date_inv) as time_status, status_inv '
             + 'FROM eugenia.users '
             + 'LEFT JOIN eugenia.invitations on (id_user = id_user_inv ) '
             + 'LEFT JOIN eugenia.invstatus on (id_inv_status = id_status) '
@@ -53,7 +53,7 @@ export const getInvUserId = async (req: Request, res: Response): Promise<Respons
 // Get all users invitations.
 export const getUsersInv = async (req: Request, res: Response): Promise<Response> => {
     try {
-        let sqlString: string = 'SELECT id_user, name_user, last_name_user, id_inv, creation_date_inv, entry_date_time_inv, expiration_date_inv, timestatus(expiration_date_inv) as time_status, status_inv '
+        let sqlString: string = 'SELECT id_user, name_user, last_name_user, id_inv, creation_date_inv, entry_date_time_inv, expiration_date_inv, eugenia.timestatus(expiration_date_inv) as time_status, status_inv '
             + 'FROM eugenia.users'
             + 'LEFT JOIN eugenia.invitations on (id_user = id_user_inv ) ';
             + 'LEFT JOIN eugenia.invstatus on (id_inv_status = id_status) Order by id_user'
