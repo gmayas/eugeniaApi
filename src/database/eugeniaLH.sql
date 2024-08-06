@@ -68,7 +68,7 @@ CREATE TABLE IF NOT EXISTS eugenia.invstatus (
 
 
 INSERT INTO eugenia.invitations(id_user_inv, id_inv_status, creation_date_inv, entry_date_time_inv, expiration_date_inv)
-	VALUES ('1', '1' ,'2024-08-04 15:00:00', '2024-08-11 07:00:00','2024-08-12 00:00:00');
+	VALUES ('2', '1' , creationdate(), '2024-08-11 07:00:00','2024-08-12 00:00:00');
 
 
 INSERT INTO eugenia.invstatus (status_inv)
@@ -124,3 +124,24 @@ AS $function$
 $function$
 ;
 GRANT EXECUTE ON FUNCTION eugenia.timestatus(timestamp without time zone) TO PUBLIC;
+
+-- DROP FUNCTION eugenia.creationdate();
+
+CREATE OR REPLACE FUNCTION eugenia.creationdate()
+	RETURNS timestamp
+	LANGUAGE plpgsql
+AS $function$
+
+  DECLARE 
+ 	 creation_date varchar(30);
+ 
+	BEGIN
+     
+      SET TIMEZONE='America/Mexico_City';
+      SELECT NOW() INTO creation_date;
+      RETURN creation_date;
+
+	END;
+$function$
+
+GRANT EXECUTE ON FUNCTION eugenia.creationdate() TO PUBLIC;

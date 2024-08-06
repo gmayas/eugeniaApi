@@ -81,7 +81,7 @@ export const signIn = async (req: Request, res: Response): Promise<Response> => 
 export const profile = async (req: Request, res: Response): Promise<Response> => {
     try{
         const { email_user } = req.body;
-        const response: QueryResult = await pool.query('SELECT * FROM eugenia.users WHERE email_user = $1 ORDER BY id ASC LIMIT 1', [email_user]);
+        const response: QueryResult = await pool.query('SELECT * FROM eugenia.users WHERE email_user = $1', [email_user]);
         return res.status(200).json({
             message: 'Query succesfully',
             data: response.rows
@@ -123,7 +123,6 @@ export const modifyPasswordUser = async (req: Request, res: Response): Promise<R
             {
                 message: 'Query succesfully',
                 success: true,
-                data: response,
                 error: 'Not error'
             }
         );
@@ -132,7 +131,6 @@ export const modifyPasswordUser = async (req: Request, res: Response): Promise<R
         return res.status(500).json({
             message: 'Error in create user',
             success: false,
-            data: {},
             error: e
         })
     }
