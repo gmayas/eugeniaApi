@@ -6,7 +6,7 @@ import format from 'pg-format';
 export const getInvId = async (req: Request, res: Response): Promise<Response> => {
     try {
         const { id_inv } = req.params;
-        let sqlString: string = format('SELECT id_user, name_user, last_name_user, expiration_date_inv, eugenia.timestatus(expiration_date_inv) as time_status, status_inv '
+        let sqlString: string = format('SELECT id_user, name_user, last_name_user, id_inv, expiration_date_inv, eugenia.timestatus(expiration_date_inv) as time_status, status_inv '
             + 'FROM eugenia.users '
             + 'Left JOIN eugenia.invitations on (id_user = id_user_inv ) '
             + 'Left JOIN eugenia.invstatus on (id_inv_status = id_status) '

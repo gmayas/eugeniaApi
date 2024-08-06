@@ -4,6 +4,7 @@ import morgan from 'morgan';
 import cors from 'cors';
 // Routes
 import rootRoute from './routes/index';
+import authRoute from './routes/auth';
 import userRoute from './routes/user';
 import invRoute from './routes/invitations';
 // settings
@@ -17,6 +18,7 @@ app.use(express.json());
 app.use(cors())
 // Routes
 app.use('/', rootRoute);
+app.use('/api/auth', authRoute);
 app.use('/api/user', userRoute);
 app.use('/api/invitations', invRoute);
 //
