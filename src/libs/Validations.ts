@@ -12,7 +12,7 @@ export const TokenValidation = async (req: Request, res: Response, next: NextFun
         const token = req.header('token');
         console.log('token: ', token);
         if (!token) return res.status(401).json('Access Denied');
-        const payload = await jwt.verify(token, process.env['TOKEN_SECRET'] || '') as IPayload;
+        const payload = jwt.verify(token, process.env['TOKEN_SECRET'] || '') as IPayload;
         console.log('payload: ', payload)
         req.emailUser = payload.emailuser  // Se guarda en  req.userId paa que todas las rutas la puedan ver. 
         next();

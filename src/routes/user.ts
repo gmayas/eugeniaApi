@@ -1,13 +1,12 @@
 import { Router } from 'express';
 const router = Router();
 //
-import { getUsers, getUserbyId, getUserbyEmail, createUser, modifyPassword, deleteUser } from '../controllers/user.controller';
+import { getUsers, getUserbyId, getUserbyEmail, deleteUser } from '../controllers/user.controller';
+import { TokenValidation } from '../libs/Validations';
 // User  
-router.get('/getUsers', getUsers );
-router.get('/getUserbyId/:id_user', getUserbyId );
-router.get('/getUserbyEmail/:email', getUserbyEmail );
-router.post('/createUser', createUser);
-router.put('/modifyPassword/:id_user', modifyPassword);
-router.delete('/deleteUser/:id_user', deleteUser);
+router.get('/getUsers', TokenValidation, getUsers );
+router.get('/getUserbyId/:id_user', TokenValidation, getUserbyId );
+router.get('/getUserbyEmail/:email', TokenValidation, getUserbyEmail );
+router.delete('/removeUser/:id_user', TokenValidation, deleteUser);
 // //
 export default router;

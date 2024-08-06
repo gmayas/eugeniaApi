@@ -6,7 +6,7 @@ import format from 'pg-format';
 export const getInvId = async (req: Request, res: Response): Promise<Response> => {
     try {
         const { id_inv } = req.params;
-        let sqlString: string = format('SELECT id_user, name_user, last_name_user, expiration_date_inv, timestatus(expiration_date_inv) as time_status, status_inv '
+        let sqlString: string = format('SELECT id_user, name_user, last_name_user, id_inv, expiration_date_inv, eugenia.timestatus(expiration_date_inv) as time_status, status_inv '
             + 'FROM eugenia.users '
             + 'Left JOIN eugenia.invitations on (id_user = id_user_inv ) '
             + 'Left JOIN eugenia.invstatus on (id_inv_status = id_status) '
@@ -30,7 +30,7 @@ export const getInvId = async (req: Request, res: Response): Promise<Response> =
 export const getInvUserId = async (req: Request, res: Response): Promise<Response> => {
     try {
         const { id_user } = req.params;
-        let sqlString: string = format('SELECT id_user, name_user, last_name_user, id_inv, creation_date_inv, entry_date_time_inv, expiration_date_inv, timestatus(expiration_date_inv) as time_status, status_inv '
+        let sqlString: string = format('SELECT id_user, name_user, last_name_user, id_inv, creation_date_inv, entry_date_time_inv, expiration_date_inv, eugenia.timestatus(expiration_date_inv) as time_status, status_inv '
             + 'FROM eugenia.users '
             + 'LEFT JOIN eugenia.invitations on (id_user = id_user_inv ) '
             + 'LEFT JOIN eugenia.invstatus on (id_inv_status = id_status) '
@@ -53,7 +53,7 @@ export const getInvUserId = async (req: Request, res: Response): Promise<Respons
 // Get all users invitations.
 export const getUsersInv = async (req: Request, res: Response): Promise<Response> => {
     try {
-        let sqlString: string = 'SELECT id_user, name_user, last_name_user, id_inv, creation_date_inv, entry_date_time_inv, expiration_date_inv, timestatus(expiration_date_inv) as time_status, status_inv '
+        let sqlString: string = 'SELECT id_user, name_user, last_name_user, id_inv, creation_date_inv, entry_date_time_inv, expiration_date_inv, eugenia.timestatus(expiration_date_inv) as time_status, status_inv '
             + 'FROM eugenia.users'
             + 'LEFT JOIN eugenia.invitations on (id_user = id_user_inv ) ';
             + 'LEFT JOIN eugenia.invstatus on (id_inv_status = id_status) Order by id_user'
@@ -75,23 +75,23 @@ export const getUsersInv = async (req: Request, res: Response): Promise<Response
 //
 export const createInvUser = async (req: Request, res: Response): Promise<Response> => {
     try {
-        const newInv: any = {
-            id_user_inv: req.body.id_user_inv,
-            id_inv_status: req.body.id_inv_status,
-            creation_date_inv: req.body.creation_date_inv,
-            entry_date_time_inv: req.body.entry_date_inv,
-            expiration_date_inv: req.body.expiration_date_inv
-        };
+        const { id_user_inv , id_inv_status , entry_date_time_inv, expiration_date_inv } = req.body;
         // insert newInvition
-        let sqlString: string = format('INSERT INTO eugenia.invitations(id_user_inv, id_inv_status, creation_date_inv, entry_date_time_inv, expiration_date_inv) '
-            + 'VALUES %L', [[newInv.id_user_inv, newInv.id_inv_status, newInv.creation_date_inv, newInv.entry_date_time_inv, newInv.expiration_date_inv]]);
+        let sqlString: string = `INSERT INTO eugenia.invitations(id_user_inv, id_inv_status, creation_date_inv, entry_date_time_inv, expiration_date_inv)
+                                 VALUES ('${id_user_inv}', '${id_inv_status}', eugenia.creationdate(), '${entry_date_time_inv}', '${expiration_date_inv}');`
         console.log('sqlString Insert: ', sqlString)
         const saveInv: QueryResult = await pool.query(sqlString);
-        return res.status(200).json(newInv);
+        return res.status(200).json(
+            {
+                message: 'Query succesfully',
+                success: true,
+                error: 'Not error'                
+            });
     } catch (e) {
         console.log(e);
         return res.status(500).json({
             message: 'Error in create user',
+            success: false,
             error: e
         })
     }
