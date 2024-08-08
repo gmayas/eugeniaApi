@@ -1,9 +1,9 @@
 import { Request, Response } from 'express';
 import { QueryResult } from 'pg';
-import  pool  from '../database/database';
+import pool from '../database/database';
 import format from 'pg-format';
 import * as _ from 'lodash';
-import {  encrypPassword, validatePassword } from '../libs/Validations'
+import { encrypPassword, validatePassword } from '../libs/Validations'
 import jwt from 'jsonwebtoken';
 
 // Create user 
@@ -24,7 +24,7 @@ export const signUp = async (req: Request, res: Response): Promise<Response> => 
         if (emailuserExists.Ok) return res.status(400).json('Email already exists');
         // insert newUser
         sqlString = format('INSERT INTO eugenia.users(name_user, last_name_user, email_user,  password_user, apartment_num_user) '
-                            + 'VALUES %L', [[newUser.name_user, newUser.last_name_user, newUser.email_user, newUser.password_user, newUser.apartment_num_user]]);
+            + 'VALUES %L', [[newUser.name_user, newUser.last_name_user, newUser.email_user, newUser.password_user, newUser.apartment_num_user]]);
         console.log('sqlString Insert: ', sqlString)
         const saveUser: QueryResult = await pool.query(sqlString);
         // get token
@@ -46,69 +46,75 @@ export const signUp = async (req: Request, res: Response): Promise<Response> => 
 };
 
 export const signIn = async (req: Request, res: Response): Promise<Response> => {
-    try{
+    try {
         console.log('req.body: ', req.body);
         const { email_user, password_user } = req.body;
         const queryUser: QueryResult = await pool.query('SELECT * FROM eugenia.users WHERE email_user = $1', [email_user]);
-        if ( queryUser.rowCount <=0 ) return res.status(400).json('Email or Password is wrong');
+        if (queryUser.rowCount <= 0) return res.status(400).json('Email or Password is wrong');
         const dataResult = queryUser.rows.find(f => f.email_user == email_user);
-        console.log( _.get(dataResult,'passworduser',''))
-        const correctPassword = await validatePassword(password_user, _.get(dataResult,'password_user',''));
-        if (!correctPassword)
-        {   
+        console.log(_.get(dataResult, 'passworduser', ''))
+        const correctPassword = await validatePassword(password_user, _.get(dataResult, 'password_user', ''));
+        if (!correctPassword) {
             dataResult.success = false;
             dataResult.token = '';
             dataResult.message = 'Invalid Password';
             return res.status(400).json(dataResult);
-        } 
+        }
         // Get Token
-        const token: string = jwt.sign({ email_user: _.get( dataResult, 'email_user','') }, process.env['TOKEN_SECRET'] || '',  {
+        const token: string = jwt.sign({
+            id_user: _.get(dataResult, 'id_user', ''),
+            name_user: _.get(dataResult, 'name_user', ''),
+            last_name_user: _.get(dataResult, 'last_name_user', ''),
+            email_user: _.get(dataResult, 'email_user', ''),
+            apartment_num_user: _.get(dataResult, 'apartment_num_user', ''),
+            success: true
+        }, process.env['TOKEN_SECRET'] || '', {
             expiresIn: 60 * 60 * 24 // Duracion de 24 hrs
         });
         dataResult.token = token;
         dataResult.success = true;
-        console.log('dataResult: ', dataResult); 
+        console.log('dataResult: ', dataResult);
         return res.header('auth-token', token).status(200).json(dataResult);
-     } catch ( e ){
-         console.log(e);
-         return res.status(500).json({
+    } catch (e) {
+        console.log(e);
+        return res.status(500).json({
             message: 'Error in query',
             error: e
         })
-     }  
+    }
 };
 
 export const profile = async (req: Request, res: Response): Promise<Response> => {
-    try{
+    try {
         const { email_user } = req.body;
         const response: QueryResult = await pool.query('SELECT * FROM eugenia.users WHERE email_user = $1', [email_user]);
         return res.status(200).json({
             message: 'Query succesfully',
             data: response.rows
         });
-     } catch ( e ){
-         console.log(e);
-         return res.status(500).json({
+    } catch (e) {
+        console.log(e);
+        return res.status(500).json({
             message: 'Error in query',
             error: e
         })
-     }  
+    }
 };
 
 export const logOut = async (req: Request, res: Response): Promise<Response> => {
-        try{
-           return res.status(200).json({
-                message: 'Come back soon',
-                data: {}
-            });
-         } catch ( e ){
-             console.log(e);
-             return res.status(500).json({
-                message: 'Error in query',
-                error: e
-            })
-         }  
-}; 
+    try {
+        return res.status(200).json({
+            message: 'Come back soon',
+            data: {}
+        });
+    } catch (e) {
+        console.log(e);
+        return res.status(500).json({
+            message: 'Error in query',
+            error: e
+        })
+    }
+};
 
 // Modify password 
 export const modifyPasswordUser = async (req: Request, res: Response): Promise<Response> => {
@@ -153,3 +159,28 @@ export const emailExists = async (email_user: string) => {
         return { Ok: false, id_user: null }
     }
 };
+
+export const isLoggedIn = (req: Request, res: Response): any => {
+    try {
+        res.status(200).json(
+            {
+                message: 'User is logged in',
+                id_user: req.id_user,
+                name_user: req.name_user,
+                last_name_user: req.last_name_user,
+                email_user: req.email_user,
+                apartment_num_user: req.apartment_num_user,
+                success: req.success,
+                error: 'Not error'
+            }
+        );
+    } catch (e) {
+        console.log(e);
+        res.status(500).json({
+            message: 'Toket inválido',
+            success: false,
+            error: e
+        })
+    }
+
+}
