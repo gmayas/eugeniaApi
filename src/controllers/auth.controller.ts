@@ -50,7 +50,10 @@ export const signIn = async (req: Request, res: Response): Promise<Response> => 
         console.log('req.body: ', req.body);
         const { email_user, password_user } = req.body;
         const queryUser: QueryResult = await pool.query('SELECT * FROM eugenia.users WHERE email_user = $1', [email_user]);
-        if (queryUser.rowCount <= 0) return res.status(400).json('Email or Password is wrong');
+        if (queryUser.rowCount <= 0) return res.status(400).json({
+            success: false,
+            message: 'Email or Password is wrong'
+        });
         const dataResult = queryUser.rows.find(f => f.email_user == email_user);
         console.log(_.get(dataResult, 'passworduser', ''))
         const correctPassword = await validatePassword(password_user, _.get(dataResult, 'password_user', ''));
@@ -79,6 +82,7 @@ export const signIn = async (req: Request, res: Response): Promise<Response> => 
         console.log(e);
         return res.status(500).json({
             message: 'Error in query',
+            success: false,
             error: e
         })
     }
