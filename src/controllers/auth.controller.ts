@@ -21,18 +21,30 @@ export const signUp = async (req: Request, res: Response): Promise<Response> => 
         // Email Validation
         emailuserExists = await emailExists(newUser.email_user);
         console.log('emailuserExists:', emailuserExists)
-        if (emailuserExists.Ok) return res.status(400).json('Email already exists');
+        if (emailuserExists.Ok) return res.status(400).json(
+            {
+                success: false,
+                message: 'Email already exists'
+            });
         // insert newUser
         sqlString = format('INSERT INTO eugenia.users(name_user, last_name_user, email_user,  password_user, apartment_num_user) '
             + 'VALUES %L', [[newUser.name_user, newUser.last_name_user, newUser.email_user, newUser.password_user, newUser.apartment_num_user]]);
         console.log('sqlString Insert: ', sqlString)
         const saveUser: QueryResult = await pool.query(sqlString);
-        // get token
-        const token: string = jwt.sign({ emailuser: newUser.emailuser }, process.env['TOKEN_SECRET'] || '', {
-            expiresIn: 60 * 60 * 24  // Duracion de 24 hrs
-        });
+        // 
         emailuserExists = await emailExists(newUser.email_user);
         if (emailuserExists.Ok) { newUser.id_user = emailuserExists.id_user }
+        // Get Token
+        const token: string = jwt.sign({
+            id_user: newUser.id_user,
+            name_user: newUser.name_user,
+            last_name_user: newUser.last_name_user,
+            email_user: newUser.email_user,
+            apartment_num_user: newUser.apartment_num_user,
+            success: true
+        }, process.env['TOKEN_SECRET'] || '', {
+            expiresIn: 60 * 60 * 24 // Duracion de 24 hrs
+        });
         newUser.token = token;
         newUser.success = true;
         return res.header('auth-token', token).status(200).json(newUser);
