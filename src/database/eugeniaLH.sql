@@ -85,13 +85,21 @@ Order by id_user
 
 -- Select invitations user id
 
+ SELECT id_user, name_user, last_name_user, id_inv, creation_date_inv, entry_date_time_inv, expiration_date_inv, eugenia.timestatus(expiration_date_inv) as time_status, status_inv
+                                  FROM eugenia.users
+                                  LEFT JOIN eugenia.invitations on (id_user = id_user_inv )
+                                  LEFT JOIN eugenia.invstatus on (id_inv_status = id_status)
+                                  WHERE id_user = 2
+                                    AND (id_inv = null or null is Null)
+                                  Order by id_inv Desc;
 
-SELECT id_user, name_user, last_name_user, id_inv_status, status_inv, id_inv, expiration_date_inv, timestatus(expiration_date_inv) as time_status
-FROM eugenia.users
-left JOIN eugenia.invitations on (id_user = id_user_inv )
-left join eugenia.invstatus on (id_inv_status = id_status)
-WHERE id_user = '1'   
-Order by id_inv
+ SELECT id_user, name_user, last_name_user, id_inv, creation_date_inv, entry_date_time_inv, expiration_date_inv, eugenia.timestatus(expiration_date_inv) as time_status, status_inv
+                                  FROM eugenia.users
+                                  LEFT JOIN eugenia.invitations on (id_user = id_user_inv )
+                                  LEFT JOIN eugenia.invstatus on (id_inv_status = id_status)
+                                  WHERE id_user = 2
+                                    AND (id_inv = 10 or 10 is Null)
+                                 Order by id_inv Desc;
 
 -- Select invitations id
 
