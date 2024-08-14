@@ -120,13 +120,13 @@ GET: /api/invitations/getInvId/:id_inv
 
 ![](/images/12.png)
 
-🙂 Remove invitación id (deleteInvId), elimina la invitación según si id.
+🙂 Remove invitación id (deleteInvId), elimina la invitación según su id.
 
 DELETE: /api/invitations/removeInvId/:id_inv
 
 ![](/images/16.png)
 
-🙂 Modify status invitación (modifyStatusInvId), modifica el status de la invitación según si id.
+🙂 Modify status invitación (modifyStatusInvId), modifica el status de la invitación según su id.
 
 PUT: /api/invitations/modifyStatusInvId/:id_inv
 
