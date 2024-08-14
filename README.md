@@ -39,9 +39,9 @@ POST: /api/auth/signIn
 
 ![](/images/02.png)
 
-🙂 getAuth (isLoggedIn), sirve para verificar si la JWT está vigente y extraer la información del usuario (verifica si el usuario se quedó logueado).
+🙂 getAuth (isLoggedIn), sirve para verificar si el JWT está vigente y extraer la información del usuario (verifica si el usuario se quedó logueado).
 
-POST: /api/auth/auth
+GET: /api/auth/auth
 
 ![](/images/02-A.png)
  
@@ -57,7 +57,7 @@ POST: /api/auth/logout
 
 ![](/images/04.png)
 
-🙂 Profile (profile), sirve para obtener la información de usuario según su email.
+🙂 Profile (profile), sirve para obtener la información del usuario según su email.
 
 POST: /api/auth/profile
 
@@ -89,7 +89,7 @@ GET: /api/user/getUserbyId/:id_user
 
 GET: /api/user/getUserbyEmail/:email
 
-![](/images/10.png)
+![](/images/10-A.png)
 
 🙂 Remove user (deleteUser), elimina al usuario según su id.
 
@@ -114,7 +114,7 @@ POST: /api/invitations/getInvUserId
 ![](/images/13-A.png)
 ![](/images/13.png)
 
-🙂 Get invitación id (getInvId), se obtienen la invitación según si id.
+🙂 Get invitación id (getInvId), se obtienen la invitación según su id.
 
 GET: /api/invitations/getInvId/:id_inv
 
