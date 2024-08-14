@@ -23,7 +23,7 @@ EugeniaApi BackEnd es una API Rest que fue creada con NodeJS versión 20.12.2, c
 
 ![](/images/20.png)
 
-🙂 Si desea ver código SQL de la de base de datos, solo vea el archivo eugeniaLH.sql
+🙂 Si desea ver el código SQL de la de base de datos, solo vea el archivo eugeniaLH.sql
 
 ![](/images/17.png)
 
@@ -48,9 +48,10 @@ POST: /api/auth/auth
 🙂 newUser (signUp), sirve para registrar a un usuario nuevo y reenvía la información del usuario con un JWT. 
 
 POST: /api/auth/signUp
+
 ![](/images/03.png)
 
-🙂 Logout (logOut), envía mensaje de Come back soon y data = {}, con data ={} rl FrontEnd entiende que no hay datos.
+🙂 Logout (logOut), envía mensaje de Come back soon y data = { }, con data ={ } el FrontEnd entiende que no hay datos.
 
 POST: /api/auth/logout
 
@@ -84,6 +85,51 @@ GET: /api/user/getUserbyId/:id_user
 
 ![](/images/09.png)
 
+🙂 Get user by email (getUserbyEmail), extrae la información del usuario según su email.
 
+GET: /api/user/getUserbyEmail/:email
+
+![](/images/10.png)
+
+🙂 Remove user (deleteUser), elimina al usuario según su id.
+
+DELETE: /api/user/removeUser/:id_user
+
+![](/images/06.png)
+
+🙂 Invitations:
+
+En invitations, es donde se encuentran todos los métodos relacionados con las invitaciones de los usuarios.
+
+🙂 Add new invitation (createInvUser), donde se crean las invitaciones según el usuario.
+
+POST: /api/invitations/createInvUser
+
+![](/images/14.png)
+
+🙂 Get invitación user id (getInvUserId), se obtienen las invitaciones o la invitación según el usuario.
+
+POST: /api/invitations/getInvUserId
+
+![](/images/13-A.png)
+![](/images/13.png)
+
+🙂 Get invitación id (getInvId), se obtienen la invitación según si id.
+
+GET: /api/invitations/getInvId/:id_inv
+
+![](/images/12.png)
+
+🙂 Remove invitación id (deleteInvId), elimina la invitación según si id.
+
+DELETE: /api/invitations/removeInvId/:id_inv
+
+![](/images/16.png)
+
+🙂 Modify status invitación (modifyStatusInvId), modifica el status de la invitación según si id.
+
+PUT: /api/invitations/modifyStatusInvId/:id_inv
+
+![](/images/15.png)
 
 `© 2024 Copyright: GMayaS C:\>Desarrollo en Sistemas.`
