@@ -41,7 +41,6 @@ INSERT INTO eugenia.users(name_user, last_name_user, email_user,  password_user,
 SELECT id_user, name_user, last_name_user, email_user, password_user, apartment_num_user
 	FROM eugenia.users;
 
-
 -- eugenia.invitations
 
 CREATE TABLE IF NOT EXISTS eugenia.invitations (
@@ -55,6 +54,7 @@ CREATE TABLE IF NOT EXISTS eugenia.invitations (
 	CONSTRAINT invitations_id_inv_status_fkey FOREIGN KEY (id_inv_status) REFERENCES eugenia.invstatus(id_status),
 	CONSTRAINT invitations_id_user_inv_fkey FOREIGN KEY (id_user_inv) REFERENCES eugenia.users(id_user)
 );
+
 CREATE INDEX invitations_id_inv_status_idx ON eugenia.invitations (id_inv_status);
 -- PostgreSQL uses the yyyy-mm-dd hh:mm:ss format date.
 
@@ -66,16 +66,13 @@ CREATE TABLE IF NOT EXISTS eugenia.invstatus (
 	CONSTRAINT invstatus_pkey PRIMARY KEY (id_status)
 );
 
-
 INSERT INTO eugenia.invitations(id_user_inv, id_inv_status, creation_date_inv, entry_date_time_inv, expiration_date_inv)
 	VALUES ('2', '1' , creationdate(), '2024-08-11 07:00:00','2024-08-12 00:00:00');
-
 
 INSERT INTO eugenia.invstatus (status_inv)
 VALUES ('Activa'), ('Inactiva');    
 
 -- Select all user invitations
-
 
 SELECT id_user, name_user, last_name_user, id_inv_status, status_inv, id_inv, expiration_date_inv, timestatus(expiration_date_inv) as time_status
 FROM eugenia.users
@@ -85,7 +82,7 @@ Order by id_user
 
 -- Select invitations user id
 
- SELECT id_user, name_user, last_name_user, id_inv, creation_date_inv, entry_date_time_inv, expiration_date_inv, eugenia.timestatus(expiration_date_inv) as time_status, status_inv
+SELECT id_user, name_user, last_name_user, id_inv, creation_date_inv, entry_date_time_inv, expiration_date_inv, eugenia.timestatus(expiration_date_inv) as time_status, status_inv
                                   FROM eugenia.users
                                   LEFT JOIN eugenia.invitations on (id_user = id_user_inv )
                                   LEFT JOIN eugenia.invstatus on (id_inv_status = id_status)
@@ -93,7 +90,7 @@ Order by id_user
                                     AND (id_inv = null or null is Null)
                                   Order by id_inv Desc;
 
- SELECT id_user, name_user, last_name_user, id_inv, creation_date_inv, entry_date_time_inv, expiration_date_inv, eugenia.timestatus(expiration_date_inv) as time_status, status_inv
+SELECT id_user, name_user, last_name_user, id_inv, creation_date_inv, entry_date_time_inv, expiration_date_inv, eugenia.timestatus(expiration_date_inv) as time_status, status_inv
                                   FROM eugenia.users
                                   LEFT JOIN eugenia.invitations on (id_user = id_user_inv )
                                   LEFT JOIN eugenia.invstatus on (id_inv_status = id_status)
@@ -108,7 +105,6 @@ FROM eugenia.users
 left JOIN eugenia.invitations on (id_user = id_user_inv )
 left join eugenia.invstatus on (id_inv_status = id_status)
 where id_inv = '3';
-
 
 -- DROP FUNCTION eugenia.timestatus();
 
