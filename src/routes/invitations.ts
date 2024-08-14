@@ -5,7 +5,7 @@ import { getInvId, createInvUser, getInvUserId, deleteInvId, modifyStatusInvId }
 import { TokenValidation } from '../libs/Validations';
 // Invitations  
 router.post('/createInvUser', TokenValidation, createInvUser);
-router.get('/getInvUserId/:id_user', TokenValidation, getInvUserId );
+router.post('/getInvUserId', TokenValidation, getInvUserId );
 router.get('/getInvId/:id_inv', TokenValidation, getInvId );
 router.delete('/removeInvId/:id_inv', TokenValidation, deleteInvId);
 router.put('/modifyStatusInvId/:id_inv', TokenValidation, modifyStatusInvId);

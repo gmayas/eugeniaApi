@@ -11,7 +11,7 @@ export const getInvId = async (req: Request, res: Response): Promise<Response> =
             + 'Left JOIN eugenia.invitations on (id_user = id_user_inv ) '
             + 'Left JOIN eugenia.invstatus on (id_inv_status = id_status) '
             + 'WHERE id_inv = %L', id_inv);
-        console.log('sqlString Insert: ', sqlString)
+        console.log('sqlString: ', sqlString)
         const response: QueryResult = await pool.query(sqlString);
         return res.status(200).json({
             message: 'Query succesfully',
@@ -29,13 +29,15 @@ export const getInvId = async (req: Request, res: Response): Promise<Response> =
 //
 export const getInvUserId = async (req: Request, res: Response): Promise<Response> => {
     try {
-        const { id_user } = req.params;
-        let sqlString: string = format('SELECT id_user, name_user, last_name_user, id_inv, creation_date_inv, entry_date_time_inv, expiration_date_inv, eugenia.timestatus(expiration_date_inv) as time_status, status_inv '
-            + 'FROM eugenia.users '
-            + 'LEFT JOIN eugenia.invitations on (id_user = id_user_inv ) '
-            + 'LEFT JOIN eugenia.invstatus on (id_inv_status = id_status) '
-            + 'WHERE id_user = %L Order by id_inv', id_user);
-        console.log('sqlString Insert: ', sqlString)
+        const { id_user, id_inv } = req.body;
+        let sqlString: string = `SELECT id_user, name_user, last_name_user, id_inv, creation_date_inv, entry_date_time_inv, expiration_date_inv, eugenia.timestatus(expiration_date_inv) as time_status, status_inv 
+                                 FROM eugenia.users
+                                 LEFT JOIN eugenia.invitations on (id_user = id_user_inv ) 
+                                 LEFT JOIN eugenia.invstatus on (id_inv_status = id_status) 
+                                 WHERE id_user = ${id_user} 
+                                   AND (id_inv = ${id_inv} or ${id_inv} is Null)
+                                 Order by id_inv Desc;`
+        console.log('sqlString: ', sqlString)
         const response: QueryResult = await pool.query(sqlString);
         return res.status(200).json({
             message: 'Query succesfully',
